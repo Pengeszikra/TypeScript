@@ -7,6 +7,17 @@
 [![Downloads](https://img.shields.io/npm/dm/typescript.svg)](https://www.npmjs.com/package/typescript)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/microsoft/TypeScript/badge)](https://api.securityscorecards.dev/projects/github.com/microsoft/TypeScript)
 
+## Pipeline operator in typesript
+
+This fork reasion is the `pipeline operator`: `|>` implementation POC to typescript language. This works just started so this version is not stable, sure to use original typescript.
+
+```ts
+"hello world" |> console.log;
+```
+
+[pipeline operator great again discuss on dev.to](https://dev.to/pengeszikra/pipeline-operator-great-again-1cbn)
+
+---
 
 [TypeScript](https://www.typescriptlang.org/) is a language for application-scale JavaScript. TypeScript adds optional types to JavaScript that support tools for large-scale JavaScript applications for any browser, for any host, on any OS. TypeScript compiles to readable, standards-based JavaScript. Try it out at the [playground](https://www.typescriptlang.org/play/), and stay up to date via [our blog](https://blogs.msdn.microsoft.com/typescript) and [Twitter account](https://twitter.com/typescript).
 

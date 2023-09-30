@@ -272,6 +272,7 @@ const textToToken = new Map(Object.entries({
     "@": SyntaxKind.AtToken,
     "#": SyntaxKind.HashToken,
     "`": SyntaxKind.BacktickToken,
+    "|>": SyntaxKind.PipeOperatorToken,
 }));
 
 /*

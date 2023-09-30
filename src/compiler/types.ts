@@ -129,6 +129,7 @@ export const enum SyntaxKind {
     AmpersandAmpersandEqualsToken,
     QuestionQuestionEqualsToken,
     CaretEqualsToken,
+    PipeOperatorToken,
     // Identifiers and PrivateIdentifiers
     Identifier,
     PrivateIdentifier,
