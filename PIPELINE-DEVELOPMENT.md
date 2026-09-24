@@ -48,24 +48,32 @@ Compiler code is still unchanged. No pipeline feature is implemented yet.
 Generated AST files must be updated through their generators rather than edited
 as the authoritative source.
 
-## Environment status at setup
+## Environment and validation
 
-- Git 2.51.1, Node 24.19.0, npm 11.9.0 available.
-- `npm ci --ignore-scripts --no-audit --no-fund` succeeded (253 packages).
-- Lifecycle scripts were skipped during dependency installation.
-- Upstream declares Go 1.27 and npm 11.19.1; its Volta Node pin is 24.20.0.
-- Go is not installed. `npm run build` stops with `spawn go ENOENT`.
-- The attempt to query `https://go.dev/dl/?mode=json` timed out at the proxy.
-- No compiler tests have run. Installing dependencies is not build validation.
+- Git 2.51.1 and Node 24.19.0 available. Node satisfies the package's engines
+  requirement; the upstream Volta pin is 24.20.0.
+- Go 1.27.1 installed from the official `dl.google.com` distribution into
+  `/workspace/scratch/278229582c5f/toolchains/go`.
+- Dependency setup completed with the declared npm 11.19.1:
+  `npm exec --yes --package=npm@11.19.1 -- npm ci --no-audit --no-fund`.
+- `npm run build` passed with Go on PATH (initial build: about 2m 24s).
+- `./built/local/tsc --version` reports `Version 7.1.0-dev`.
+- Existing scanner and parser package tests passed.
+- A strict-mode TypeScript smoke program compiled to JavaScript, then executed
+  with Node and printed `Result: 42`.
+- The full compiler and language-service suites have not been run.
 
-Once the required toolchain is available, follow `CONTRIBUTING.md`, complete
-dependency setup with the declared npm version, and run:
+For this workspace, expose the locally installed toolchain before building:
 
 ```sh
+export PATH=/workspace/scratch/278229582c5f/toolchains/go/bin:$PATH
 npm run build
 ./built/local/tsc --version
+go -C ./tsc test ./internal/scanner ./internal/parser
 go -C ./tsc test -run='TestLocal/<test name>' ./internal/testrunner
 ```
+
+Follow `CONTRIBUTING.md` for broader validation and upstream submission gates.
 
 ## Later GitHub publication
 
