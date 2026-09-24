@@ -21,6 +21,66 @@ The right operand evaluates to a callable that receives the left value as its
 single supplied argument. Support curried function factories and preserve
 TypeScript inference and useful diagnostics. No topic placeholder is proposed.
 
+## Required TS and TSX parity
+
+The operator must work equally in `.ts` and `.tsx` from the first implementation.
+TSX support is a release criterion, not a later extension. This requirement comes
+from the author's two years of using the earlier proposal in a React JS/JSX
+project: readable function workflows and avoiding deeply nested call syntax are
+central goals.
+
+In either file type, a chain supplies exactly one argument to each stage. Whether
+the target accepts that call is governed by TypeScript's call rules; this does
+not by itself require the function declaration to contain exactly one parameter.
+
+Required TSX expression contexts include:
+
+```tsx
+const title = value |> normalize |> format;
+const content = <section>{value |> normalize |> renderValue}</section>;
+const element = <Panel title={value |> normalize |> format} />;
+const rendered = value |> normalize |> (x => <span>{x}</span>);
+const wrapped = (<span>Example</span>) |> wrapElement;
+const generic = value |> (<T,>(x: T) => x);
+```
+
+Names in these examples denote appropriately typed functions and components;
+they are specification examples, not runnable fixtures yet. Keep normal TSX
+disambiguation rules, such as the comma in a generic arrow's `<T,>`.
+
+| Acceptance area | Required coverage |
+| --- | --- |
+| Shared expressions | Matching inference and diagnostics for equivalent `.ts` and `.tsx` chains |
+| JSX containers | Pipelines in children, attributes, and spread expressions |
+| JSX-valued stages | Parenthesized arrow stages returning elements or fragments; JSX values as pipeline inputs |
+| JSX parsing boundaries | Literal `\|>` text and strings remain text; nested braces and JSX scanning resume correctly |
+| JSX emit | `preserve`, `react`, `react-jsx`, and `react-jsxdev` retain their normal JSX behavior while pipeline syntax is lowered |
+| Editor locations | Diagnostics and stage type information refer to the original pipeline source |
+
+`.js`/`.jsx` parity can be assessed separately; it has not been added as an
+explicit acceptance requirement by this clarification.
+
+## Type checking and emission design constraints
+
+- Resolve every stage as a call with one supplied argument using the existing
+  call-signature, overload, inference, and contextual-typing machinery wherever
+  possible. Do not approximate this with `Parameters<F>[0]` and `ReturnType<F>`.
+- Check generic functions and generic curried factories explicitly. Context can
+  affect inference; merely passing an already-finalized type from stage to stage
+  may lose behavior available in ordinary nested calls.
+- Preserve source identity and positions for diagnostics and editor features.
+  Blindly checking detached synthetic call nodes is not an established solution:
+  call checking also depends on parents, source files, flow information, and caches.
+- Treat `p |> f` as function application, while separately defining runtime
+  evaluation order and receiver semantics. For pure named stages a chain may
+  emit as `h(g(f(p)))`; side-effecting operands can require temporaries.
+- Under the proposed left-to-right evaluation rule, `getData() |> makeTransform()`
+  must evaluate `getData()` before `makeTransform()`, each once. Directly emitting
+  `makeTransform()(getData())` would reverse that order.
+- Acceptance tests must cover successful chains, an incompatible middle stage,
+  final result types, generic identity functions, overload selection, curried
+  functions, and contextual arrow parameters in both TS and TSX contexts.
+
 ## First milestone
 
 1. Build and smoke-test the unchanged upstream compiler.
@@ -28,7 +88,8 @@ TypeScript inference and useful diagnostics. No topic placeholder is proposed.
    arrow-function parentheses, and async boundaries before implementation.
 3. Implement syntax, checking, and JavaScript emission.
 4. Test chains, currying, generics, overloads, contextual typing, diagnostics,
-   evaluation order, and single evaluation of side-effecting operands.
+   evaluation order, and single evaluation of side-effecting operands in TS and
+   TSX, including the JSX contexts and emit modes listed above.
 
 Compiler code is still unchanged. No pipeline feature is implemented yet.
 
