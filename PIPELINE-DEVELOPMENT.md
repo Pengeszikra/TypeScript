@@ -93,6 +93,16 @@ explicit acceptance requirement by this clarification.
 
 Compiler code is still unchanged. No pipeline feature is implemented yet.
 
+## Test-first acceptance suite
+
+The native compiler harness now has `TestPipeline` and `TestPipelineControls`,
+with fixtures and coverage documented in `tsc/testdata/pipeline/README.md`.
+There are 28 fixture pairs, expanded to 136 variants per suite across TS/TSX,
+ES2015/ES2022, and the applicable JSX modes. Ordinary-call controls pass; pipeline
+cases are deliberately red until implementation. No parser failures are accepted
+as baselines. Run `npm run test:pipeline:controls` and `npm run test:pipeline`
+with Go on PATH.
+
 ## Source map
 
 | Area | Starting location |

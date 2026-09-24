@@ -1,0 +1,147 @@
+[
+  {
+    "name": "basic-chain",
+    "tsxOnly": false,
+    "result": "\"Result: 42\"",
+    "declarationContains": "export declare const result: string;"
+  },
+  {
+    "name": "long-chain",
+    "tsxOnly": false,
+    "result": "32",
+    "declarationContains": "export declare const result: number;"
+  },
+  {
+    "name": "currying",
+    "tsxOnly": false,
+    "result": "[\"n=2\",\"n=3\"]",
+    "declarationContains": "export declare const result: string[];"
+  },
+  {
+    "name": "generic-overloads",
+    "tsxOnly": false,
+    "result": "[[\"a\",1],\"number\"]"
+  },
+  {
+    "name": "contextual-arrows",
+    "tsxOnly": false,
+    "result": "\"ADA:42\"",
+    "declarationContains": "export declare const result: string;"
+  },
+  {
+    "name": "precedence-and-comments",
+    "tsxOnly": false,
+    "result": "[9,7,6,4]"
+  },
+  {
+    "name": "evaluation-order",
+    "tsxOnly": false,
+    "result": "{\"value\":5,\"events\":[\"input\",\"factory:a\",\"call:a\",\"factory:b\",\"call:b\"]}"
+  },
+  {
+    "name": "exceptions-stop-chain",
+    "tsxOnly": false,
+    "result": "[\"fail\"]"
+  },
+  {
+    "name": "branch-local-evaluation",
+    "tsxOnly": false,
+    "result": "{\"a\":false,\"b\":7,\"values\":[2,4],\"events\":[\"stage\",\"stage\"]}"
+  },
+  {
+    "name": "lexical-scope",
+    "tsxOnly": false,
+    "result": "21"
+  },
+  {
+    "name": "optional-and-rest",
+    "tsxOnly": false,
+    "result": "[5,1]"
+  },
+  {
+    "name": "explicit-await",
+    "tsxOnly": false,
+    "result": "\"n=42\"",
+    "declarationContains": "export declare const result: Promise<string>;"
+  },
+  {
+    "name": "literals-and-bitwise",
+    "tsxOnly": false,
+    "result": "{\"text\":\"|>\",\"match\":true,\"bits\":3,\"union\":\"x\"}"
+  },
+  {
+    "name": "wrong-input",
+    "tsxOnly": false,
+    "errorCode": 2345
+  },
+  {
+    "name": "non-callable",
+    "tsxOnly": false,
+    "errorCode": 2349
+  },
+  {
+    "name": "required-second-argument",
+    "tsxOnly": false,
+    "errorCode": 2554
+  },
+  {
+    "name": "middle-stage-mismatch",
+    "tsxOnly": false,
+    "errorCode": 2345
+  },
+  {
+    "name": "overload-mismatch",
+    "tsxOnly": false,
+    "errorCode": 2769
+  },
+  {
+    "name": "possibly-undefined",
+    "tsxOnly": false,
+    "errorCode": 2722
+  },
+  {
+    "name": "promise-needs-await",
+    "tsxOnly": false,
+    "errorCode": 2345
+  },
+  {
+    "name": "generic-constraint",
+    "tsxOnly": false,
+    "errorCode": 2345
+  },
+  {
+    "name": "wrong-result-type",
+    "tsxOnly": false,
+    "errorCode": 2322
+  },
+  {
+    "name": "jsx-containers",
+    "tsxOnly": true,
+    "result": "{\"kind\":\"div\",\"props\":{\"title\":\"Ada\",\"children\":{\"kind\":\"span\",\"props\":{\"children\":\"Ada\"}},\"id\":\"Ada\"}}"
+  },
+  {
+    "name": "jsx-arrows-and-fragments",
+    "tsxOnly": true,
+    "result": "[{\"kind\":\"fragment\",\"props\":{\"children\":{\"kind\":\"span\",\"props\":{\"children\":\"ADA\"}}}},\"span\"]"
+  },
+  {
+    "name": "tsx-generic-arrow",
+    "tsxOnly": true,
+    "result": "{\"kind\":\"span\",\"props\":{\"children\":\"Ada\"}}"
+  },
+  {
+    "name": "jsx-text-boundaries",
+    "tsxOnly": true,
+    "result": "{\"kind\":\"div\",\"props\":{\"title\":\"|>\",\"children\":[\"literal |> \",\"|>\",{\"kind\":\"span\",\"props\":{\"children\":\"ok\"}}]}}"
+  },
+  {
+    "name": "jsx-prop-mismatch",
+    "tsxOnly": true,
+    "errorCode": 2322
+  },
+  {
+    "name": "jsx-stage-mismatch",
+    "tsxOnly": true,
+    "errorCode": 2345
+  }
+]

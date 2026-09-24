@@ -14,6 +14,8 @@
         "build:watch": "hereby build:watch",
         "build:watch:debug": "hereby build:watch --debug",
         "test": "hereby test",
+        "test:pipeline": "go -C ./tsc test -run '^TestPipeline$' ./internal/testrunner -count=1",
+        "test:pipeline:controls": "go -C ./tsc test -run '^TestPipelineControls$' ./internal/testrunner -count=1",
         "lint": "hereby lint",
         "format": "hereby format",
         "check:format": "hereby check:format",
