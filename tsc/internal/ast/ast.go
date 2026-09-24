@@ -1,3 +1,4 @@
+// Pipeline implementation coded by OpenAI Codex; existing upstream code retains its authorship.
 package ast
 
 import (
@@ -2129,7 +2130,9 @@ func (node *ElementAccessExpression) propagateSubtreeFacts() SubtreeFacts {
 }
 
 func (node *CallExpression) computeSubtreeFacts() SubtreeFacts {
-	return propagateSubtreeFacts(node.Expression) |
+	// Pipeline transformation marker coded by OpenAI Codex.
+	return core.IfElse(IsPipelineExpression(node.AsNode()), SubtreeContainsTypeScript, SubtreeFactsNone) |
+		propagateSubtreeFacts(node.Expression) |
 		propagateSubtreeFacts(node.QuestionDotToken) |
 		propagateEraseableSyntaxListSubtreeFacts(node.TypeArguments) |
 		propagateNodeListSubtreeFacts(node.Arguments, propagateSubtreeFacts) |

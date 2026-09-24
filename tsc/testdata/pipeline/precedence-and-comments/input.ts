@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 const double = (n: number) => n * 2;
 const minusOne = (n: number) => n - 1;
 const a = 2 + 3 |> double |> minusOne;

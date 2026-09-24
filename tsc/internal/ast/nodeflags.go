@@ -1,3 +1,4 @@
+// Pipeline implementation coded by OpenAI Codex; existing upstream code retains its authorship.
 package ast
 
 type NodeFlags uint32
@@ -45,6 +46,9 @@ const (
 	NodeFlagsPossiblyContainsDeprecatedTag NodeFlags = 1 << 26 // Set during parse if comment text contains '@deprecated'; must confirm via JSDoc lookup
 	NodeFlagsUnreachable                   NodeFlags = 1 << 27 // If node is unreachable according to the binder
 	NodeFlagsReparserTransformedLiteral    NodeFlags = 1 << 28 // If node was transformed during parsing, making its' naive text source not match the AST
+
+	// Pipeline implementation coded by OpenAI Codex: retain call syntax until lowering.
+	NodeFlagsPipeline NodeFlags = 1 << 29
 
 	NodeFlagsBlockScoped = NodeFlagsLet | NodeFlagsConst | NodeFlagsUsing
 	NodeFlagsConstant    = NodeFlagsConst | NodeFlagsUsing

@@ -1,3 +1,4 @@
+// Pipeline source printing coded by OpenAI Codex; existing upstream code retains its authorship.
 // Package printer exports a Printer for pretty-printing TS ASTs and writer interfaces and implementations for using them
 // Intended ultimate usage:
 //
@@ -2582,6 +2583,17 @@ func (p *Printer) emitCallee(callee *ast.Expression, parentNode *ast.Node) {
 
 func (p *Printer) emitCallExpression(node *ast.CallExpression) {
 	state := p.enterNode(node.AsNode())
+	// Pipeline source printing coded by OpenAI Codex. JavaScript emit lowers
+	// pipelines first; this path preserves syntax for direct AST printing.
+	if ast.IsPipelineExpression(node.AsNode()) {
+		p.emitExpression(node.Arguments.Nodes[0], ast.OperatorPrecedencePipeline)
+		p.writeSpace()
+		p.emitToken(ast.KindBarGreaterThanToken, node.Arguments.End(), WriteKindOperator, node.AsNode())
+		p.writeSpace()
+		p.emitExpression(node.Expression, ast.OperatorPrecedencePipeline+1)
+		p.exitNode(node.AsNode(), state)
+		return
+	}
 	p.emitCallee(node.Expression, node.AsNode())
 	p.emitTokenNode(node.QuestionDotToken)
 	p.emitTypeArguments(node.AsNode(), node.TypeArguments)

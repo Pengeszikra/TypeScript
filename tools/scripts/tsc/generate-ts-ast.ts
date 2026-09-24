@@ -1,3 +1,4 @@
+// Pipeline implementation coded by OpenAI Codex; existing upstream code retains its authorship.
 /**
  * Schema-driven TypeScript AST code generator.
  * Reads tools/scripts/tsc/ast.json and produces:
@@ -721,12 +722,14 @@ function generateFactory(): string {
     // Methods
     out.push(`    forEachChild<T>(visitor: (node: Node) => T, visitArray?: (nodes: NodeArray<Node>) => T): T | undefined {`);
     out.push(`        const fn = forEachChildTable[this.kind];`);
-    out.push(`        return fn ? fn(this._data, visitor, visitArray) : undefined;`);
+    // Pipeline source-order traversal coded by OpenAI Codex: call visitors need flags.
+    out.push(`        return fn ? fn(this.kind === SyntaxKind.CallExpression ? this : this._data, visitor, visitArray) : undefined;`);
     out.push(`    }`);
     out.push(``);
     out.push(`    childrenIter<TNext = void>(): Generator<Node, TNext | undefined, TNext> {`);
     out.push(`        const fn = yieldEachChildTable[this.kind];`);
-    out.push(`        return fn ? fn(this._data) : emptyChildrenIter();`);
+    // Pipeline source-order traversal coded by OpenAI Codex.
+    out.push(`        return fn ? fn(this.kind === SyntaxKind.CallExpression ? this : this._data) : emptyChildrenIter();`);
     out.push(`    }`);
     out.push(``);
     out.push(`    getSourceFile(): SourceFile {`);

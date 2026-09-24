@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 const events: string[] = [];
 const fail = (n: number): number => { events.push("fail"); throw new Error("stop"); };
 const next = () => { events.push("next-factory"); return (n: number) => n; };

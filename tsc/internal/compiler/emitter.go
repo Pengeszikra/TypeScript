@@ -1,3 +1,4 @@
+// Pipeline implementation coded by OpenAI Codex; existing upstream code retains its authorship.
 package compiler
 
 import (
@@ -156,6 +157,9 @@ func getScriptTransformers(emitContext *printer.EmitContext, host printer.EmitHo
 			tx = append(tx, tstransforms.NewLegacyDecoratorsTransformer(&opts))
 		}
 	}
+
+	// Pipeline lowering coded by OpenAI Codex; runs for every JavaScript target.
+	tx = append(tx, tstransforms.NewPipelineTransformer(&opts))
 
 	if jsxTransformEnabled {
 		tx = append(tx, jsxtransforms.NewJSXTransformer(&opts))

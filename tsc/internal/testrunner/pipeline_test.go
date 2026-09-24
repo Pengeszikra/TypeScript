@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 package testrunner
 
 import (
@@ -16,19 +17,22 @@ import (
 	"github.com/microsoft/TypeScript/tsc/internal/testutil/harnessutil"
 )
 
-// These are acceptance assertions, not snapshots of the unimplemented syntax.
+// These are behavioral acceptance assertions, not syntax-error snapshots.
 // Controls exercise the same harness with independently written ordinary calls.
-// Do not accept today's parser errors as the expected pipeline behavior.
+// Do not accept parser errors as the expected pipeline behavior.
+// TestPipeline was coded by OpenAI Codex.
 func TestPipeline(t *testing.T) {
 	t.Parallel()
 	runPipelineSuite(t, false)
 }
 
+// TestPipelineControls was coded by OpenAI Codex.
 func TestPipelineControls(t *testing.T) {
 	t.Parallel()
 	runPipelineSuite(t, true)
 }
 
+// pipelineCase was coded by OpenAI Codex.
 type pipelineCase struct {
 	Name                string `json:"name"`
 	TSXOnly             bool   `json:"tsxOnly"`
@@ -37,6 +41,7 @@ type pipelineCase struct {
 	DeclarationContains string `json:"declarationContains"`
 }
 
+// pipelineFixture was coded by OpenAI Codex.
 func pipelineFixture(t *testing.T, parts ...string) string {
 	t.Helper()
 	path := filepath.Join(append([]string{repo.TestDataPath(), "pipeline"}, parts...)...)
@@ -47,6 +52,7 @@ func pipelineFixture(t *testing.T, parts ...string) string {
 	return string(data)
 }
 
+// runPipelineSuite was coded by OpenAI Codex.
 func runPipelineSuite(t *testing.T, controls bool) {
 	var cases []pipelineCase
 	if err := json.Unmarshal([]byte(pipelineFixture(t, "cases.json")), &cases); err != nil {
@@ -81,6 +87,7 @@ func runPipelineSuite(t *testing.T, controls bool) {
 	}
 }
 
+// runPipelineCase was coded by OpenAI Codex.
 func runPipelineCase(t *testing.T, tc pipelineCase, controls bool, format, jsx, target string) {
 	t.Helper()
 	variant, fixtureExt := "input", "ts"
@@ -188,6 +195,7 @@ func runPipelineCase(t *testing.T, tc pipelineCase, controls bool, format, jsx, 
 	runPipelineJavaScript(t, output.Content, tc.Result)
 }
 
+// pipelineNode was coded by OpenAI Codex.
 func pipelineNode(t *testing.T) string {
 	t.Helper()
 	node, err := exec.LookPath("node")
@@ -197,6 +205,7 @@ func pipelineNode(t *testing.T) string {
 	return node
 }
 
+// checkPreservedPipelineOutput was coded by OpenAI Codex.
 func checkPreservedPipelineOutput(t *testing.T, source string) {
 	t.Helper()
 	// Use the repository's pinned stock TypeScript dev dependency, never the fork.
@@ -214,6 +223,7 @@ if (file.parseDiagnostics.length) { console.error(file.parseDiagnostics.map(d =>
 	}
 }
 
+// runPipelineJavaScript was coded by OpenAI Codex.
 func runPipelineJavaScript(t *testing.T, source, expected string) {
 	t.Helper()
 	dir := t.TempDir()

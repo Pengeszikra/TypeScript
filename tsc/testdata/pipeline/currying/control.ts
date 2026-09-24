@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 const filter = <T,>(predicate: (x: T) => boolean) => (xs: readonly T[]) => xs.filter(predicate);
 const map = <T, U>(fn: (x: T) => U) => (xs: readonly T[]) => xs.map(fn);
 const positive = (n: number) => n > 0;

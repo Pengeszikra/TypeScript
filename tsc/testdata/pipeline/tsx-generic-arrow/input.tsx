@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 const value = { name: "Ada" };
 const preserved = value |> (<T,>(x: T) => x);
 export const result = <span>{preserved.name}</span>;

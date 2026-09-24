@@ -1,3 +1,4 @@
+// Pipeline implementation coded by OpenAI Codex; existing upstream code retains its authorship.
 // @ts-check
 
 import AdmZip from "adm-zip";
@@ -456,7 +457,11 @@ function moqGenerator(file, type, output, { source = ".", packageName, inputs = 
 }
 
 async function runGenerateASTStringer() {
-    await runGoGenerator("generate:ast-stringer", stringerGenerator("tsc/internal/ast/kind_generated.go", "Kind", "kind_stringer_generated.go"));
+    // Pipeline stringer attribution coded by OpenAI Codex.
+    const generator = stringerGenerator("tsc/internal/ast/kind_generated.go", "Kind", "kind_stringer_generated.go");
+    generator.inputs.push("../../../tools/scripts/tsc/pipeline-attribution.ts");
+    generator.commands.push(["node", "../../../tools/scripts/tsc/pipeline-attribution.ts", "kind_stringer_generated.go"]);
+    await runGoGenerator("generate:ast-stringer", generator);
 }
 
 export const generateASTStringer = goGenerateTask("generate:ast-stringer", runGenerateASTStringer);

@@ -1,3 +1,4 @@
+// Pipeline implementation coded by OpenAI Codex; existing upstream code retains its authorship.
 package scanner
 
 import (
@@ -131,38 +132,40 @@ var textToKeyword = map[string]ast.Kind{
 
 var textToToken = func() map[string]ast.Kind {
 	m := map[string]ast.Kind{
-		"{":    ast.KindOpenBraceToken,
-		"}":    ast.KindCloseBraceToken,
-		"(":    ast.KindOpenParenToken,
-		")":    ast.KindCloseParenToken,
-		"[":    ast.KindOpenBracketToken,
-		"]":    ast.KindCloseBracketToken,
-		".":    ast.KindDotToken,
-		"...":  ast.KindDotDotDotToken,
-		";":    ast.KindSemicolonToken,
-		",":    ast.KindCommaToken,
-		"<":    ast.KindLessThanToken,
-		">":    ast.KindGreaterThanToken,
-		"<=":   ast.KindLessThanEqualsToken,
-		">=":   ast.KindGreaterThanEqualsToken,
-		"==":   ast.KindEqualsEqualsToken,
-		"!=":   ast.KindExclamationEqualsToken,
-		"===":  ast.KindEqualsEqualsEqualsToken,
-		"!==":  ast.KindExclamationEqualsEqualsToken,
-		"=>":   ast.KindEqualsGreaterThanToken,
-		"+":    ast.KindPlusToken,
-		"-":    ast.KindMinusToken,
-		"**":   ast.KindAsteriskAsteriskToken,
-		"*":    ast.KindAsteriskToken,
-		"/":    ast.KindSlashToken,
-		"%":    ast.KindPercentToken,
-		"++":   ast.KindPlusPlusToken,
-		"--":   ast.KindMinusMinusToken,
-		"<<":   ast.KindLessThanLessThanToken,
-		"</":   ast.KindLessThanSlashToken,
-		">>":   ast.KindGreaterThanGreaterThanToken,
-		">>>":  ast.KindGreaterThanGreaterThanGreaterThanToken,
-		"&":    ast.KindAmpersandToken,
+		"{":   ast.KindOpenBraceToken,
+		"}":   ast.KindCloseBraceToken,
+		"(":   ast.KindOpenParenToken,
+		")":   ast.KindCloseParenToken,
+		"[":   ast.KindOpenBracketToken,
+		"]":   ast.KindCloseBracketToken,
+		".":   ast.KindDotToken,
+		"...": ast.KindDotDotDotToken,
+		";":   ast.KindSemicolonToken,
+		",":   ast.KindCommaToken,
+		"<":   ast.KindLessThanToken,
+		">":   ast.KindGreaterThanToken,
+		"<=":  ast.KindLessThanEqualsToken,
+		">=":  ast.KindGreaterThanEqualsToken,
+		"==":  ast.KindEqualsEqualsToken,
+		"!=":  ast.KindExclamationEqualsToken,
+		"===": ast.KindEqualsEqualsEqualsToken,
+		"!==": ast.KindExclamationEqualsEqualsToken,
+		"=>":  ast.KindEqualsGreaterThanToken,
+		"+":   ast.KindPlusToken,
+		"-":   ast.KindMinusToken,
+		"**":  ast.KindAsteriskAsteriskToken,
+		"*":   ast.KindAsteriskToken,
+		"/":   ast.KindSlashToken,
+		"%":   ast.KindPercentToken,
+		"++":  ast.KindPlusPlusToken,
+		"--":  ast.KindMinusMinusToken,
+		"<<":  ast.KindLessThanLessThanToken,
+		"</":  ast.KindLessThanSlashToken,
+		">>":  ast.KindGreaterThanGreaterThanToken,
+		">>>": ast.KindGreaterThanGreaterThanGreaterThanToken,
+		"&":   ast.KindAmpersandToken,
+		// Pipeline token implementation coded by OpenAI Codex.
+		"|>":   ast.KindBarGreaterThanToken,
 		"|":    ast.KindBarToken,
 		"^":    ast.KindCaretToken,
 		"!":    ast.KindExclamationToken,
@@ -870,7 +873,11 @@ func (s *Scanner) Scan() ast.Kind {
 					return s.token
 				}
 			}
-			if s.charAt(1) == '|' {
+			// Pipeline recognition coded by OpenAI Codex.
+			if s.charAt(1) == '>' {
+				s.pos += 2
+				s.token = ast.KindBarGreaterThanToken
+			} else if s.charAt(1) == '|' {
 				if s.charAt(2) == '=' {
 					s.pos += 3
 					s.token = ast.KindBarBarEqualsToken

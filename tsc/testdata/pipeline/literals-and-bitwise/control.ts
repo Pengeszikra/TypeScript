@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 const text = "|>";
 const match = /\|>/.test(text);
 const identity = (x: string) => x;

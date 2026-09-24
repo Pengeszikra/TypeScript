@@ -143,5 +143,30 @@
     "name": "jsx-stage-mismatch",
     "tsxOnly": true,
     "errorCode": 2345
+  },
+  {
+    "name": "recursive-fields",
+    "tsxOnly": false,
+    "result": "[2,1]"
+  },
+  {
+    "name": "parameter-scope",
+    "tsxOnly": false,
+    "result": "[11,0,10]"
+  },
+  {
+    "name": "method-receiver",
+    "tsxOnly": false,
+    "result": "[12,13]"
+  },
+  {
+    "name": "suspended-stage",
+    "tsxOnly": false,
+    "result": "[11,22]"
+  },
+  {
+    "name": "flow-and-binding",
+    "tsxOnly": false,
+    "result": "[3,3,6]"
   }
 ]

@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 const events: string[] = [];
 const input = () => { events.push("input"); return 4; };
 const stage = (n: number) => { events.push("stage"); return n * 2; };

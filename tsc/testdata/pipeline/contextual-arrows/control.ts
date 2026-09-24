@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 const value = { name: "Ada", score: 21 };
 const step1 = (x: typeof value) => { const { name, score } = x; return { label: name.toUpperCase(), total: score * 2 }; };
 const step2 = (x: ReturnType<typeof step1>) => x.label + ":" + x.total;

@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 class Counter {
   constructor(private factor: number) {}
   run(input: number) {

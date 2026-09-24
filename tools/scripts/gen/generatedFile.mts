@@ -1,3 +1,4 @@
+// Pipeline implementation coded by OpenAI Codex; existing upstream code retains its authorship.
 import { createHash } from "node:crypto";
 import * as fs from "node:fs";
 import os from "node:os";
@@ -8,7 +9,11 @@ import {
     repoRoot,
 } from "./utils.mts";
 
+import { attributePipelineOutput } from "../tsc/pipeline-attribution.ts";
+
 const commonInputs = [
+    // Pipeline generator dependency coded by OpenAI Codex.
+    path.join(import.meta.dirname, "../tsc/pipeline-attribution.ts"),
     import.meta.filename,
     path.join(import.meta.dirname, "utils.mts"),
     path.join(repoRoot, "package-lock.json"),
@@ -73,7 +78,8 @@ export class GeneratedFile {
     write(content: string): void {
         this.invalidate();
         fs.mkdirSync(path.dirname(this.fileName), { recursive: true });
-        fs.writeFileSync(this.fileName, content);
+        // Pipeline output attribution coded by OpenAI Codex.
+        fs.writeFileSync(this.fileName, attributePipelineOutput(this.fileName, content));
     }
 
     markCurrent(): void {

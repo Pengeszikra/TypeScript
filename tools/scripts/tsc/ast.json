@@ -60,6 +60,8 @@
             "GreaterThanGreaterThanGreaterThanToken",
             "AmpersandToken",
             "BarToken",
+            { "comment": "Pipeline token implementation coded by OpenAI Codex." },
+            "BarGreaterThanToken",
             "CaretToken",
             "ExclamationToken",
             "TildeToken",
@@ -3128,9 +3130,10 @@
                     {
                         "name": "Flags",
                         "inherited": true,
-                        "bitmask": "NodeFlagsOptionalChain"
+                        "bitmask": "(NodeFlagsOptionalChain | NodeFlagsPipeline)"
                     }
                 ],
+                "handWrittenVisitor": true,
                 "arena": true
             },
             "NewExpression": {

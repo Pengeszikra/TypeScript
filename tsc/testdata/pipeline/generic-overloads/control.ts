@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 const identity = <T,>(x: T): T => x;
 function select(x: number): "number";
 function select(x: string): "string";

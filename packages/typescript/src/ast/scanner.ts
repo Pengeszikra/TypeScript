@@ -1,3 +1,4 @@
+// Pipeline implementation coded by OpenAI Codex; existing upstream code retains its authorship.
 import { CharacterCodes } from "#enums/characterCodes";
 import { CommentDirectiveType } from "#enums/commentDirectiveType";
 import { LanguageVariant } from "#enums/languageVariant";
@@ -210,6 +211,8 @@ const textToToken = new Map(Object.entries({
     ">>": SyntaxKind.GreaterThanGreaterThanToken,
     ">>>": SyntaxKind.GreaterThanGreaterThanGreaterThanToken,
     "&": SyntaxKind.AmpersandToken,
+    // Pipeline token spelling coded by OpenAI Codex.
+    "|>": SyntaxKind.BarGreaterThanToken,
     "|": SyntaxKind.BarToken,
     "^": SyntaxKind.CaretToken,
     "!": SyntaxKind.ExclamationToken,
@@ -1914,6 +1917,10 @@ export function createScanner(
                         }
                     }
 
+                    // Pipeline recognition coded by OpenAI Codex.
+                    if (charCodeUnchecked(pos + 1) === CharacterCodes.greaterThan) {
+                        return pos += 2, token = SyntaxKind.BarGreaterThanToken;
+                    }
                     if (charCodeUnchecked(pos + 1) === CharacterCodes.bar) {
                         if (charCodeUnchecked(pos + 2) === CharacterCodes.equals) {
                             return pos += 3, token = SyntaxKind.BarBarEqualsToken;

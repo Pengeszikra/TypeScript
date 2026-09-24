@@ -1,3 +1,4 @@
+// Pipeline implementation coded by OpenAI Codex; existing upstream code retains its authorship.
 package parser
 
 import (
@@ -4702,6 +4703,14 @@ func (p *Parser) parseBinaryExpressionRest(precedence ast.OperatorPrecedence, le
 					break
 				}
 			}
+		} else if operator == ast.KindBarGreaterThanToken {
+			// Pipeline parsing coded by OpenAI Codex. Retain source positions while
+			// exposing an ordinary one-argument call to the binder and checker.
+			p.nextToken()
+			right := p.parseBinaryExpressionOrHigher(newPrecedence)
+			arguments := p.newNodeList(leftOperand.Loc, []*ast.Node{leftOperand})
+			leftOperand = p.finishNode(p.factory.NewCallExpression(right, nil, nil, arguments, ast.NodeFlagsPipeline), pos)
+			lastOperand = leftOperand
 		} else {
 			leftOperand = p.makeBinaryExpression(leftOperand, p.parseTokenNode(), p.parseBinaryExpressionOrHigher(newPrecedence), pos)
 			lastOperand = leftOperand

@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 export namespace JSX {
   interface Element { kind: string; props: { [name: string]: unknown }; }
   interface ElementChildrenAttribute { children: {}; }

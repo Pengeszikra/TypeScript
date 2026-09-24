@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 const double = async (n: number) => n * 2;
 const format = (n: number) => "n=" + n;
 async function run() {

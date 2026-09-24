@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 function fn(x: string): string;
 function fn(x: number): number;
 function fn(x: string | number) { return x; }

@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 const value = { name: "Ada", score: 21 };
 export const result = value
   |> (({ name, score }) => ({ label: name.toUpperCase(), total: score * 2 }))

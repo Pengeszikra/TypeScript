@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 declare global {
   namespace JSX {
     interface Element { kind: string; props: { [name: string]: unknown }; }

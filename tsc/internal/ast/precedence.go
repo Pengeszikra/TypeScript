@@ -1,3 +1,4 @@
+// Pipeline implementation coded by OpenAI Codex; existing upstream code retains its authorship.
 package ast
 
 import (
@@ -43,6 +44,8 @@ const (
 	//     ShortCircuitExpression
 	//     ShortCircuitExpression `?` AssignmentExpression `:` AssignmentExpression
 	OperatorPrecedenceConditional
+	// Pipeline precedence coded by OpenAI Codex: above conditional, below logical OR.
+	OperatorPrecedencePipeline
 	// LogicalORExpression:
 	//     LogicalANDExpression
 	//     LogicalORExpression `||` LogicalANDExpression
@@ -201,6 +204,10 @@ func getOperator(expression *Expression) Kind {
 
 // Gets the precedence of an expression
 func GetExpressionPrecedence(expression *Expression) OperatorPrecedence {
+	// Pipeline source precedence handling coded by OpenAI Codex.
+	if IsPipelineExpression(expression) {
+		return OperatorPrecedencePipeline
+	}
 	operator := getOperator(expression)
 	var flags OperatorPrecedenceFlags
 	if expression.Kind == KindNewExpression && expression.ArgumentList() == nil {
@@ -335,6 +342,9 @@ func GetOperatorPrecedence(nodeKind Kind, operatorKind Kind, flags OperatorPrece
 // Gets the precedence of a binary operator
 func GetBinaryOperatorPrecedence(operatorKind Kind) OperatorPrecedence {
 	switch operatorKind {
+	// Pipeline precedence coded by OpenAI Codex.
+	case KindBarGreaterThanToken:
+		return OperatorPrecedencePipeline
 	case KindQuestionQuestionToken:
 		return OperatorPrecedenceCoalesce
 	case KindBarBarToken:

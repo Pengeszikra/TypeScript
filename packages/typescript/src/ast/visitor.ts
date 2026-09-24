@@ -1,11 +1,14 @@
+// Pipeline implementation coded by OpenAI Codex; existing upstream code retains its authorship.
 /**
  * Hand-written visitor implementations for nodes with runtime-dependent
  * child ordering. Generated code in visitor.generated.ts and factory.generated.ts
  * delegates to these functions.
  */
 
+import { NodeFlags } from "#enums/nodeFlags";
 import { SyntaxKind } from "#enums/syntaxKind";
 import type {
+    CallExpression,
     JSDocComment,
     JSDocParameterOrPropertyTag,
     JSDocParameterTag,
@@ -14,12 +17,15 @@ import type {
     NodeArray,
 } from "./ast.ts";
 import {
+    updateCallExpression,
     updateJSDocParameterTag,
     updateJSDocPropertyTag,
 } from "./factory.generated.ts";
 import {
     isEntityName,
+    isExpression,
     isIdentifier,
+    isQuestionDotToken,
     isTypeNode,
 } from "./is.ts";
 import type { Visitor } from "./visitor.generated.ts";
@@ -109,3 +115,38 @@ function visitEachChildOfJSDocParameterOrPropertyTag(node: JSDocParameterOrPrope
 }
 
 export { visitEachChildOfJSDocParameterOrPropertyTag as visitEachChildOfJSDocParameterTag, visitEachChildOfJSDocParameterOrPropertyTag as visitEachChildOfJSDocPropertyTag };
+
+// Call traversal in pipeline source order coded by OpenAI Codex.
+export function forEachChildOfCallExpression<T>(data: CallExpression, cbNode: (node: Node) => T, cbNodes: ((nodes: NodeArray<Node>) => T) | undefined): T | undefined {
+    if (data.flags & NodeFlags.Pipeline) {
+        return visitNodesForEachChild(cbNode, cbNodes, data.arguments) || visitNodeForEachChild(cbNode, data.expression);
+    }
+    return visitNodeForEachChild(cbNode, data.expression) || visitNodeForEachChild(cbNode, data.questionDotToken) ||
+        visitNodesForEachChild(cbNode, cbNodes, data.typeArguments) || visitNodesForEachChild(cbNode, cbNodes, data.arguments);
+}
+
+// Generator traversal in pipeline source order coded by OpenAI Codex.
+export function* yieldEachChildOfCallExpression<T>(data: CallExpression): Generator<Node, T | undefined, T> {
+    const children = data.flags & NodeFlags.Pipeline
+        ? [...data.arguments, data.expression]
+        : [data.expression, ...(data.questionDotToken ? [data.questionDotToken] : []), ...(data.typeArguments ?? []), ...data.arguments];
+    for (const child of children) {
+        const result = yield child;
+        if (result) return result;
+    }
+    return undefined;
+}
+
+// Transforming call traversal in pipeline source order coded by OpenAI Codex.
+export function visitEachChildOfCallExpression(node: CallExpression, visitor: Visitor): CallExpression {
+    if (node.flags & NodeFlags.Pipeline) {
+        const args = visitNodes(node.arguments, visitor);
+        const expression = visitNode(node.expression, visitor, isExpression);
+        return updateCallExpression(node, expression, undefined, undefined, args);
+    }
+    const expression = visitNode(node.expression, visitor, isExpression);
+    const questionDotToken = visitNode(node.questionDotToken, visitor, isQuestionDotToken);
+    const typeArguments = visitNodes(node.typeArguments, visitor);
+    const args = visitNodes(node.arguments, visitor);
+    return updateCallExpression(node, expression, questionDotToken, typeArguments, args);
+}

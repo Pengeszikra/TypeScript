@@ -1,3 +1,4 @@
+<!-- Pipeline implementation and documentation authored by OpenAI Codex. -->
 # Pipeline operator development
 
 ## Starting point
@@ -14,6 +15,7 @@
 Implement the article's minimal function pipeline in the native Go compiler:
 
 ```ts
+// Example coded by OpenAI Codex.
 const result = input |> validate |> prepare |> filter(predicate);
 ```
 
@@ -36,6 +38,7 @@ not by itself require the function declaration to contain exactly one parameter.
 Required TSX expression contexts include:
 
 ```tsx
+// Example coded by OpenAI Codex.
 const title = value |> normalize |> format;
 const content = <section>{value |> normalize |> renderValue}</section>;
 const element = <Panel title={value |> normalize |> format} />;
@@ -91,15 +94,45 @@ explicit acceptance requirement by this clarification.
    evaluation order, and single evaluation of side-effecting operands in TS and
    TSX, including the JSX contexts and emit modes listed above.
 
-Compiler code is still unchanged. No pipeline feature is implemented yet.
+The first working implementation is complete on the local branch. The scanner
+recognizes `|>`, the parser represents each stage as a source-backed call with
+`NodeFlagsPipeline`, and the existing call checker supplies inference and
+signature diagnostics. Visitors and flow binding traverse the input before the
+callee. A dedicated emit pass lowers pipelines before JSX and ECMAScript passes.
+The JavaScript API scanner, factory and visitors recognize the same token/flag.
+
+### Current operator semantics
+
+- Left associative: `p |> f |> g` applies `f`, then `g`.
+- Lower precedence than `||`, `??`, bitwise and arithmetic operators, higher
+  than the conditional operator. Use parentheses to make mixed expressions clear.
+- Arrow stages need parentheses: `p |> (value => value + 1)`.
+- Exactly one argument is supplied; existing optional/rest/default parameter
+  rules continue to apply.
+- `p |> object.method` preserves the receiver, like `object.method(p)`.
+- The input is evaluated before the stage expression, each once. A temporary
+  retains the input across a side-effecting factory or explicit `await`/`yield`.
+- No implicit awaiting and no topic placeholder.
+- Parameter defaults and field initializers isolate their temporaries in lexical
+  arrow closures, preserving parameter scope, function length, and recursive
+  instance initialization. This is not an optimized emission strategy yet.
+
+Initializer closures introduce an inner scope for direct `eval`; exact direct-eval
+semantics in these contexts are not supported by this first prototype. Precise
+debugger stepping, performance, decorators, and interactions with every compiler
+option have not been exhaustively validated. Stock formatters/linters must also
+learn the new syntax; format the compiler's own code with the repository tools.
+
+The AST flag is internal to this fork; tools that assume every CallExpression
+has ordinary call syntax need adaptation. Full language-service integration
+(completion, signature help, edits/refactorings) remains a later milestone.
 
 ## Test-first acceptance suite
 
 The native compiler harness now has `TestPipeline` and `TestPipelineControls`,
 with fixtures and coverage documented in `tsc/testdata/pipeline/README.md`.
-There are 28 fixture pairs, expanded to 136 variants per suite across TS/TSX,
-ES2015/ES2022, and the applicable JSX modes. Ordinary-call controls pass; pipeline
-cases are deliberately red until implementation. No parser failures are accepted
+There are 33 fixture pairs, expanded to 156 variants per suite across TS/TSX,
+ES2015/ES2022, and the applicable JSX modes. Both suites pass with this implementation. No parser failures are accepted
 as baselines. Run `npm run test:pipeline:controls` and `npm run test:pipeline`
 with Go on PATH.
 
@@ -133,10 +166,24 @@ as the authoritative source.
 - A strict-mode TypeScript smoke program compiled to JavaScript, then executed
   with Node and printed `Result: 42`.
 - The full compiler and language-service suites have not been run.
+- Implementation acceptance: 156 pipeline variants and 156 controls pass.
+- Selected existing compiler regressions: 5,819 leaf checks pass, 23 are skipped
+  by the upstream harness for unsupported options (ES5, System, alwaysStrict=false).
+  Selection: `TestLocal/(jsx|call|generic|arrow|binary|optionalArgsWithDefaultValues)`.
+- JavaScript API build and test build pass; scanner/visitor unit tests pass.
+- Final native `npm run build` passes; the built `7.1.0-dev` binary compiles
+  and runs `examples/pipeline/demo.ts` and `demo.tsx` with strict checking.
+  TS prints `Result: 42`; TSX prints a span-shaped JSX object containing 42.
+- Existing scanner/parser/AST/printer package tests and the new parser tests pass.
+- AST and enum generation passes; a subsequent regeneration leaves all generated
+  output hashes unchanged. The Go and JavaScript enum value checks agree.
+- New parser tests cover malformed syntax, left association, child source order,
+  and parse/print round trips in both TS and TSX.
 
 For this workspace, expose the locally installed toolchain before building:
 
 ```sh
+# Example coded by OpenAI Codex.
 export PATH=/workspace/scratch/278229582c5f/toolchains/go/bin:$PATH
 npm run build
 ./built/local/tsc --version
@@ -154,3 +201,24 @@ not created a GitHub repository, pushed commits, or opened a pull request.
 
 This checkout lives in the conversation's execution workspace, not on the user's
 computer. Export or publish changes before relying on long-term availability.
+
+## Authorship annotations
+
+Added or modified source files and implementation blocks identify OpenAI Codex.
+Upstream authorship remains intact. Generated AST/enum files receive the same
+notice reproducibly through `tools/scripts/tsc/pipeline-attribution.ts`.
+`tools/scripts/tsc/ast.json` and `tsc/testdata/pipeline/cases.json` are strict JSON;
+their pipeline changes were also coded by OpenAI Codex, documented here rather
+than adding invalid comments to those files.
+
+## Try the implementation
+
+After `npm run build`, use the fork's `built/local/tsc` binary, rather than the
+stock npm `tsc` command. The existing acceptance fixtures provide complete TS and
+TSX examples; `examples/pipeline/demo.tsx` is a standalone runnable demonstration.
+
+```sh
+# Demo commands coded by OpenAI Codex.
+./built/local/tsc --ignoreConfig --strict --target es2022 --module commonjs --jsx react --jsxFactory h --outDir /tmp/pipeline-demo examples/pipeline/demo.tsx
+node /tmp/pipeline-demo/demo.js
+```

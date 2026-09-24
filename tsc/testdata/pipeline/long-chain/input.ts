@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 const step = (n: number) => n + 1;
 export const result = 0
   |> step

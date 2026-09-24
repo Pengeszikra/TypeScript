@@ -1,8 +1,8 @@
+<!-- Pipeline tests and documentation authored by OpenAI Codex. -->
 # Pipeline operator acceptance tests
 
-These tests specify the proposed minimal `value |> function` operator before its
-implementation. They use the native compiler's existing `harnessutil.CompileFiles`
-infrastructure. The compiler implementation is unchanged.
+These tests specify the minimal `value |> function` operator. They use the native compiler's existing `harnessutil.CompileFiles`
+infrastructure. They exercise the native pipeline implementation.
 
 ## Run
 
@@ -13,6 +13,7 @@ validator for emitted JSX in `preserve` mode. It never transforms pipeline input
 From the repository root:
 
 ```sh
+# Example coded by OpenAI Codex.
 npm run test:pipeline:controls
 npm run test:pipeline
 ```
@@ -20,12 +21,14 @@ npm run test:pipeline
 In the current conversation workspace, first expose the installed Go toolchain:
 
 ```sh
+# Example coded by OpenAI Codex.
 export PATH=/workspace/scratch/278229582c5f/toolchains/go/bin:$PATH
 ```
 
 For one case, or machine-readable results:
 
 ```sh
+# Example coded by OpenAI Codex.
 go -C ./tsc test -run '^TestPipeline$/evaluation-order' ./internal/testrunner -count=1 -v
 go -C ./tsc test -run '^TestPipeline$' ./internal/testrunner -count=1 -json
 ```
@@ -35,15 +38,16 @@ the test rather than silently skipping coverage. Go compiles the compiler under
 test directly from source; these tests do not use a potentially stale `built/`
 binary or require a separate compiler build.
 
-## Expected test-first state
+## Current state
 
-- `TestPipelineControls`: **136 passing variants** of ordinary TypeScript calls.
-- `TestPipeline`: **136 failing variants** until the operator is implemented.
+- `TestPipelineControls`: **156 passing variants** of ordinary TypeScript calls.
+- `TestPipeline`: **156 passing variants** of pipeline expressions.
 - No failing parser output has been recorded as an accepted baseline.
-- Normal Go test discovery includes both suites. The red suite is deliberately
-  neither skipped nor converted into an expected-failure success.
+- Normal Go test discovery includes both suites. Neither suite is skipped or
+  converted into an expected-failure success. The original test-first commit
+  recorded all 136 initial pipeline variants as failing before implementation.
 
-There are 28 fixture pairs: 22 shared language cases, each compiled as both `.ts`
+There are 33 fixture pairs: 27 shared language cases, each compiled as both `.ts`
 and `.tsx`, and 6 JSX-specific cases. Every variant is tested with ES2015 and
 ES2022 output. JSX-specific cases cover `preserve`, `react`, `react-jsx`, and
 `react-jsxdev`. Shared cases use `react` for the TSX parser mode.
@@ -62,6 +66,11 @@ ES2022 output. JSX-specific cases cover `preserve`, `react`, `react-jsx`, and
 | Exceptions prevent evaluation of later stage factories | `exceptions-stop-chain` |
 | Short-circuiting, untaken branches, repeated callback execution | `branch-local-evaluation` |
 | Arrow stages retain lexical `this` | `lexical-scope` |
+| Recursive field initialization and isolated temporaries | `recursive-fields` |
+| Default/destructured parameter scope and function length | `parameter-scope` |
+| Property and element method receivers | `method-receiver` |
+| Suspended generators keep their own pipeline input | `suspended-stage` |
+| Input-side flow narrowing, arrow assignments, generator binding defaults | `flow-and-binding` |
 | Optional/rest parameters and exactly one supplied argument | `optional-and-rest` |
 | Promise result types and explicit awaiting | `explicit-await` |
 | Strings, regexes, bitwise OR, union types | `literals-and-bitwise` |
@@ -111,13 +120,16 @@ integration, not React reconciliation or rendering behavior.
   in source order, once each. Untaken branches and later stages after a throw
   must remain unevaluated.
 - Each stage receives one argument. Ordinary optional/rest parameter rules apply.
-- Arithmetic binds more tightly than pipeline; other potentially ambiguous
-  logical/conditional boundaries are explicitly parenthesized in these tests.
+- Arithmetic binds more tightly than pipeline. Parser round-trip tests also cover
+  logical and conditional boundaries; precedence is specified in `PIPELINE-DEVELOPMENT.md`.
+- Method stages retain their property/element receiver, just like an ordinary method call.
 - Parenthesized arrows receive contextual parameter types from the pipeline input.
 - Promises are ordinary values until explicitly awaited; there is no implicit await.
 
-Direct method-reference receiver semantics, bare `|> await`, unparenthesized
-arrow stages, remaining precedence choices, editor hover/completion behavior,
+Bare `|> await`, unparenthesized arrow stages, editor hover/completion behavior,
 and `.js`/`.jsx` input support are not specified by this suite. They remain separate
 design or integration work. The compiler is expected to keep its existing wider
 regression suite passing once the feature is implemented.
+
+The strict JSON case manifest was coded by OpenAI Codex; attribution is kept
+here because comments are not valid JSON.

@@ -1,3 +1,4 @@
+// Pipeline acceptance tests coded by OpenAI Codex.
 const upper = (s: string) => s.toUpperCase();
 const element = ((name: string) => <span>{name}</span>)(upper("Ada"));
 const wrapped = ((child: JSX.Element) => <>{child}</>)(element);

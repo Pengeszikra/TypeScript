@@ -1,3 +1,4 @@
+// Pipeline implementation coded by OpenAI Codex; existing upstream code retains its authorship.
 package binder
 
 import (
@@ -2435,7 +2436,11 @@ func (b *Binder) bindOptionalChainRest(node *ast.Node) bool {
 
 func (b *Binder) bindCallExpressionFlow(node *ast.Node) {
 	call := node.AsCallExpression()
-	if ast.IsOptionalChain(node) {
+	// Pipeline flow binding coded by OpenAI Codex: evaluate the input first.
+	if ast.IsPipelineExpression(node) {
+		b.bindEach(call.Arguments.Nodes)
+		b.bind(call.Expression)
+	} else if ast.IsOptionalChain(node) {
 		b.bindOptionalChainFlow(node)
 	} else {
 		// If the target of the call expression is a function expression or arrow function we have
