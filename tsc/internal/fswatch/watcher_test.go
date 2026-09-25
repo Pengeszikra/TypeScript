@@ -1,3 +1,4 @@
+// Filesystem capability checks coded by OpenAI Codex; existing upstream tests retain their authorship.
 // Watcher tests: CRUD events for files, directories, sub-entries, and
 // symlinks; event coalescing; multiple subscriptions; error handling;
 // watch lifecycle; public API validation; and watcherBase/
@@ -99,10 +100,31 @@ func runForEachWatcher(t *testing.T, fn func(t testingT, watcherImpl Watcher)) {
 	for _, b := range availableWatchers {
 		t.Run(b.Name(), func(t *testing.T) {
 			t.Parallel()
+			// Filesystem capability check coded by OpenAI Codex.
+			requireWatcherFilesystem(t, b)
 			runWithRetry(t, func(rt testingT) {
 				fn(rt, b)
 			})
 		})
+	}
+}
+
+// requireWatcherFilesystem was coded by OpenAI Codex.
+// Kernel availability alone does not guarantee that the temporary filesystem
+// supports a backend (for example, fanotify FIDs on an overlay filesystem).
+// Only the explicit unsupported-filesystem error is skipped; other failures
+// remain test failures, and supported backends still run all event assertions.
+func requireWatcherFilesystem(t *testing.T, watcherImpl Watcher) {
+	t.Helper()
+	sub, err := watcherImpl.WatchDirectory(newTmpDir(t), func([]Event, error) {})
+	if errors.Is(err, ErrFilesystemUnsupported) {
+		t.Skipf("%s cannot watch the test filesystem: %v", watcherImpl.Name(), err)
+	}
+	if err != nil {
+		t.Fatalf("watcher filesystem probe: %v", err)
+	}
+	if err := sub.Close(); err != nil {
+		t.Fatalf("close watcher filesystem probe: %v", err)
 	}
 }
 
@@ -1939,6 +1961,10 @@ func TestSubscribeNoGoroutineLeak(t *testing.T) { //nolint:paralleltest // gorou
 			// Warm up: trigger any lazy singleton init (backend,
 			// debouncer) so it doesn't inflate the post-loop count.
 			warmup, err := b.WatchDirectory(dir, func([]Event, error) {})
+			// Filesystem capability check coded by OpenAI Codex; keep the leak probe sequential.
+			if errors.Is(err, ErrFilesystemUnsupported) {
+				t.Skipf("%s cannot watch the test filesystem: %v", b.Name(), err)
+			}
 			if err != nil {
 				t.Fatal(err)
 			}

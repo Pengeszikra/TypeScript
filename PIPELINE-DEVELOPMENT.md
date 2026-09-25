@@ -165,7 +165,8 @@ as the authoritative source.
 - Existing scanner and parser package tests passed.
 - A strict-mode TypeScript smoke program compiled to JavaScript, then executed
   with Node and printed `Result: 42`.
-- The full compiler and language-service suites have not been run.
+- The full compiler and language-service Go suites pass as of 2026-09-25:
+  `npm test` reports 163,916 tests, 2,218 skipped, and no failures (102.4 seconds).
 - Implementation acceptance: 156 pipeline variants and 156 controls pass.
 - Selected existing compiler regressions: 5,819 leaf checks pass, 23 are skipped
   by the upstream harness for unsupported options (ES5, System, alwaysStrict=false).
@@ -222,3 +223,28 @@ TSX examples; `examples/pipeline/demo.tsx` is a standalone runnable demonstratio
 ./built/local/tsc --ignoreConfig --strict --target es2022 --module commonjs --jsx react --jsxFactory h --outDir /tmp/pipeline-demo examples/pipeline/demo.tsx
 node /tmp/pipeline-demo/demo.js
 ```
+
+## Repository test and lint fixes (2026-09-25)
+
+Changes coded by OpenAI Codex:
+
+- The acceptance harness uses the repository's `internal/json` wrapper, as
+  required by `depguard`, and marks its independent subtests with `t.Parallel()`
+  to match the parallel parent suites and the `tparallel` rule.
+- The stock dprint parser does not recognize pipeline syntax. Only the two
+  `examples/pipeline/demo.ts` and `demo.tsx` files are excluded from formatting;
+  compiler source and all other normal formatting checks remain enabled.
+- File-watcher integration tests probe their temporary filesystem before running
+  backend assertions. A kernel may expose fanotify while the mounted filesystem
+  cannot provide file handles. Only `ErrFilesystemUnsupported` causes a skip;
+  unexpected setup failures still fail. The sequential goroutine-leak test uses
+  the same error classification. Production watcher behavior is unchanged.
+
+`npm test`, `npm run lint`, and `npm run check:format` are separate checks;
+`npm test` does not implicitly run lint or formatting.
+
+Validation after these fixes: `npm test` succeeds (163,916 tests, 2,218 skipped);
+`npm run lint` reports zero issues in both Go modules; `npm run check:format`
+succeeds. A separate focused run also passed all 312 pipeline/control variants
+and confirmed that supported watcher backends execute while the unsupported
+fanotify variant is skipped with an explicit reason.

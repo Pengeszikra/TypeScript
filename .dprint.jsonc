@@ -1,3 +1,4 @@
+// Pipeline formatting configuration coded by OpenAI Codex; existing upstream configuration retains its authorship.
 {
     // If updating this, also update the config in dtsBundler.mjs.
     "indentWidth": 4,
@@ -46,6 +47,9 @@
         "**/node_modules",
         "**/*-lock.json",
         "**/testdata",
+        // Pipeline examples use syntax unsupported by the stock formatter. Added by OpenAI Codex.
+        "examples/pipeline/demo.ts",
+        "examples/pipeline/demo.tsx",
         "packages/vscode-typescript/l10n/**",
         "tsc/internal/bundled/libs/**",
         "tsc/internal/lsp/lsproto/_generate/*.json",

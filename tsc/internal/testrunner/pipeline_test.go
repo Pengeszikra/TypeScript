@@ -3,7 +3,6 @@ package testrunner
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -13,6 +12,8 @@ import (
 	"testing"
 	"time"
 
+	// Repository JSON wrapper selected by OpenAI Codex to follow the lint rules.
+	"github.com/microsoft/TypeScript/tsc/internal/json"
 	"github.com/microsoft/TypeScript/tsc/internal/repo"
 	"github.com/microsoft/TypeScript/tsc/internal/testutil/harnessutil"
 )
@@ -79,6 +80,8 @@ func runPipelineSuite(t *testing.T, controls bool) {
 			for _, jsx := range modes {
 				for _, target := range []string{"es2015", "es2022"} {
 					t.Run(fmt.Sprintf("%s/%s/%s/%s", tc.Name, format, jsx, target), func(t *testing.T) {
+						// Subtest parallelism coded by OpenAI Codex to match the parent suites.
+						t.Parallel()
 						runPipelineCase(t, tc, controls, format, jsx, target)
 					})
 				}
