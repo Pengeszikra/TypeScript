@@ -1,4 +1,5 @@
 {
+    "_comment": "Pipeline npm packaging coded by OpenAI Codex; upstream code retains its original authorship.",
     "name": "@typescript/repo",
     "private": true,
     "version": "0.0.0",
@@ -23,7 +24,10 @@
         "tidy": "hereby tidy",
         "extension:build": "npm run -w native-preview build",
         "extension:watch": "npm run -w native-preview watch",
-        "setup-hooks": "node tools/scripts/link-hooks.mjs"
+        "setup-hooks": "node tools/scripts/link-hooks.mjs",
+        "pipeline:pack": "node tools/pipeline/build.mjs",
+        "test:pipeline-package": "node tools/pipeline/test-package.mjs",
+        "pipeline:publish": "node tools/pipeline/publish.mjs"
     },
     "devDependencies": {
         "@dprint/json": "^0.23.0",

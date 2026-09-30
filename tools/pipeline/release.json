@@ -1,0 +1,7 @@
+{
+    "_comment": "Pipeline release configuration coded by OpenAI Codex.",
+    "scope": "@pengeszikra",
+    "version": "7.1.0-pipeline.1",
+    "tag": "next",
+    "repository": "https://github.com/Pengeszikra/TypeScript"
+}
